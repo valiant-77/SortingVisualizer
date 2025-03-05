@@ -1,13 +1,12 @@
 #include <SDL2/SDL.h>
-#include <iostream>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
 
 using namespace std;
 
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
-const int ARRAY_SIZE = 100;  
+const int max_size=100;
+int ARRAY_SIZE; 
 const int BAR_GAP = 2;      
 
 void drawArray(SDL_Renderer* renderer, const vector<int>& array, int selectedIndex, int minIndex) {
@@ -36,29 +35,36 @@ void drawArray(SDL_Renderer* renderer, const vector<int>& array, int selectedInd
 }
 
 void selectionSort(SDL_Renderer* renderer, vector<int>& array) {
-    for (int i = 0; i < ARRAY_SIZE - 1; ++i) {
+    for (int i = 0; i < ARRAY_SIZE - 1; i++) {
         int minIndex = i;
-        for (int j = i + 1; j < ARRAY_SIZE; ++j) {
+        // Find the minimum in the unsorted portion of the array
+        for (int j = i + 1; j < ARRAY_SIZE; j++) {
             if (array[j] < array[minIndex]) {
                 minIndex = j;
             }
-            drawArray(renderer, array, j, minIndex);
+            // Always highlight the current scanning position (green), 
+            // with the minimum so far highlighted in a different way
+            drawArray(renderer, array, j, i);
             SDL_Delay(20); // Delay to visualize the sorting process
         }
+        
+        // Swap the found minimum with the first unsorted element
         swap(array[i], array[minIndex]);
-        drawArray(renderer, array, i, minIndex);
+        drawArray(renderer, array, i, i);
         SDL_Delay(20); // Delay to visualize the swap
     }
 }
 
 void bubbleSort(SDL_Renderer* renderer, vector<int>& array) {
-    for (int i = 0; i < ARRAY_SIZE - 1; ++i) {
-        for (int j = 0; j < ARRAY_SIZE - i - 1; ++j) {
+    for (int i = ARRAY_SIZE - 1; i >= 0; i--) {
+        for (int j = 0; j <= i - 1; j++) {
             if (array[j] > array[j + 1]) {
                 swap(array[j], array[j + 1]);
-                drawArray(renderer, array, j, j + 1);
+                drawArray(renderer, array, j, i);  // Highlight the end of the unsorted portion
                 SDL_Delay(20); // Delay to visualize the swap
             }
+            drawArray(renderer, array, j + 1, i);  // Visualize each comparison
+            SDL_Delay(20);
         }
     }
 }
@@ -135,30 +141,41 @@ void mergeSort(SDL_Renderer* renderer, vector<int>& array, int left, int right) 
     }
 }
 
-int partition(SDL_Renderer* renderer, vector<int>& array, int low, int high) {
-    int pivot = array[high]; // Choose the last element as the pivot
-    int i = low - 1; // Index of the smaller element
+int partition(SDL_Renderer* renderer, std::vector<int>& arr, int start, int end) {
+    int pivot = arr[end];
+    int pindex = start;
 
-    for (int j = low; j < high; j++) {
-        if (array[j] < pivot) {
-            i++;
-            swap(array[i], array[j]);
-            drawArray(renderer, array, j, i); // Visualize the swap
-            SDL_Delay(20); // Delay to visualize the process
+    for (int i = start; i < end; i++) {
+        if (arr[i] < pivot) {
+            // Swap elements
+            std::swap(arr[i], arr[pindex]);
+            
+            // Visualize the swap
+            drawArray(renderer, arr, i, pindex);
+            SDL_Delay(50);  // Delay to make visualization visible
+            
+            pindex++;
         }
     }
-    swap(array[i + 1], array[high]); // Place the pivot in the correct position
-    drawArray(renderer, array, i + 1, high); // Visualize the pivot placement
-    SDL_Delay(20); // Delay to visualize the process
-    return i + 1; // Return the partition index
+
+    // Place pivot in its correct position
+    std::swap(arr[end], arr[pindex]);
+    
+    // Visualize final pivot placement
+    drawArray(renderer, arr, pindex, end);
+    SDL_Delay(50);
+
+    return pindex;
 }
 
-void quickSort(SDL_Renderer* renderer, vector<int>& array, int low, int high) {
-    if (low < high) {
-        int pi = partition(renderer, array, low, high); // Partition the array
-
-        quickSort(renderer, array, low, pi - 1); // Sort the left subarray
-        quickSort(renderer, array, pi + 1, high); // Sort the right subarray
+void quickSort(SDL_Renderer* renderer, std::vector<int>& arr, int start, int end) {
+    if (start < end) {
+        // Partition the array
+        int p = partition(renderer, arr, start, end);
+        
+        // Recursively sort left and right subarrays
+        quickSort(renderer, arr, start, p - 1);
+        quickSort(renderer, arr, p + 1, end);
     }
 }
 
@@ -166,6 +183,15 @@ int main(int argc, char* argv[]) {
     // Display instructions in the console
     
     cout << "Sorting Algorithm Visualizer\n";
+    cout<<"Enter the size of the array(Max 100): ";
+    cin>>ARRAY_SIZE;
+    
+
+    if (ARRAY_SIZE > max_size) {
+        cout << "Array size exceeds the maximum limit of 100. Setting size to 100.\n";
+        ARRAY_SIZE = max_size;
+    }
+    cout<<endl;
     cout << "Press 0 for Selection Sort\n";
     cout << "Press 1 for Bubble Sort\n";
     cout << "Press 2 for Insertion Sort\n";
