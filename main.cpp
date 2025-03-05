@@ -7,14 +7,14 @@ using namespace std;
 
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
-const int ARRAY_SIZE = 100;  // Reduced array size
-const int BAR_GAP = 2;      // Gap between bars
+const int ARRAY_SIZE = 100;  
+const int BAR_GAP = 2;      
 
 void drawArray(SDL_Renderer* renderer, const vector<int>& array, int selectedIndex, int minIndex) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    int barWidth = (WINDOW_WIDTH - (ARRAY_SIZE - 1) * BAR_GAP) / ARRAY_SIZE;  // Adjusted bar width to include gaps
+    int barWidth = (WINDOW_WIDTH - (ARRAY_SIZE - 1) * BAR_GAP) / ARRAY_SIZE;  
 
     for (int i = 0; i < ARRAY_SIZE; ++i) {
         int barHeight = array[i] * (WINDOW_HEIGHT / ARRAY_SIZE);
