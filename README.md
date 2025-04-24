@@ -2,6 +2,8 @@
 
 A graphical application that visualizes popular sorting algorithms using SDL2. Watch in real-time as algorithms organize data, helping you understand the mechanics of different sorting techniques.
 
+[Download The App](https://www.libsdl.org/download-2.0.php)
+
 ## Features
 
 * **Visual Representation**: Watch sorting algorithms in action with animated bar charts
